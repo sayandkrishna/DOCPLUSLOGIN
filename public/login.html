@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+
+  <!-- Tailwind CSS and Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+    .header-logo {
+      height: 40px;
+      margin-bottom: 20px;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      transition: border-color 0.3s ease;
+    }
+    input:focus {
+      border-color: #4a90e2;
+      outline: none;
+    }
+    button {
+      padding: 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      width: 100%;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    button:hover {
+      background-color: #218838;
+      transform: translateY(-4px);
+    }
+    .error, .success {
+      color: red;
+      margin-top: 10px;
+    }
+    .success {
+      color: green;
+    }
+    a {
+      display: block;
+      margin-top: 10px;
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 h-screen flex items-center justify-center">
+
+  <!-- Logo and Login Container -->
+  <div class="login-container bg-white p-8 rounded-lg shadow-lg text-center">
+    <img src="static/images/logo.png" alt="Logo" class="header-logo mx-auto">
+    <h2 id="form-title" class="text-2xl font-bold mb-4">Login</h2>
+    <input type="text" id="username" placeholder="Username" class="border rounded py-2 px-4 mb-4">
+    <input type="password" id="password" placeholder="Password" class="border rounded py-2 px-4 mb-4">
+    <button id="submit-btn" onclick="submitForm()" class="mt-4">Login</button>
+    <p class="error" id="error"></p>
+    <p class="success" id="success"></p>
+    <a href="#" id="toggle-link" onclick="toggleForm()">Don't have an account? Sign up here</a>
+  </div>
+
+  <script>
+    let isLoginForm = true;
+
+    function toggleForm() {
+      isLoginForm = !isLoginForm;
+      document.getElementById('form-title').textContent = isLoginForm ? 'Login' : 'Sign Up';
+      document.getElementById('submit-btn').textContent = isLoginForm ? 'Login' : 'Sign Up';
+      document.getElementById('toggle-link').textContent = isLoginForm ? "Don't have an account? Sign up here" : "Already have an account? Login here";
+      document.getElementById('error').textContent = '';
+      document.getElementById('success').textContent = '';
+    }
+
+    function submitForm() {
+      const enteredUsername = document.getElementById('username').value;
+      const enteredPassword = document.getElementById('password').value;
+      const errorElement = document.getElementById('error');
+      const successElement = document.getElementById('success');
+      
+      errorElement.textContent = '';
+      successElement.textContent = '';
+
+      if (enteredUsername === '' || enteredPassword === '') {
+        errorElement.textContent = 'Please fill in all fields!';
+        return;
+      }
+
+      if (!isLoginForm && enteredPassword.length < 6) {
+        errorElement.textContent = 'Password must be at least 6 characters long!';
+        return;
+      }
+
+      const endpoint = isLoginForm ? '/login' : '/signup';
+
+      fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: enteredUsername,
+          password: enteredPassword,
+        }),
+      })
+      .then((response) => {
+        if (response.ok) {
+          if (isLoginForm) {
+            window.location.href = 'index.html';  // Redirect on successful login
+          } else {
+            successElement.textContent = 'Account created successfully! You can now log in.';
+            toggleForm();  // Switch back to the login form
+          }
+        } else {
+          return response.json().then((data) => {
+            errorElement.textContent = data.message || 'An error occurred!';
+          });
+        }
+      })
+      .catch(() => {
+        errorElement.textContent = 'Error connecting to the server!';
+      });
+    }
+  </script>
+
+</body>
+</html>

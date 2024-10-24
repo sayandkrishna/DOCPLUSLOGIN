@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <style>
+        /* Logo and Card Styles */
+        .header-logo {
+            height: 40px;
+            margin-right: 10px;
+        }
+        .card-image-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        .card-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+        .card-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+            color: white;
+        }
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0);
+            transition: background-color 0.4s ease;
+            z-index: 1;
+        }
+        .card-image-container:hover img {
+            transform: scale(1.05) translateY(-5px);
+            opacity: 0.7;
+        }
+        .card-image-container:hover .card-overlay {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        .detect-button {
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .detect-button:hover {
+            background-color: #555;
+            transform: translateY(-4px);
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-auth.js"></script>
+</head>
+<body class="bg-white font-roboto">
+    <header class="flex items-center justify-between p-4 shadow-md">
+        <div class="flex items-center">
+            <img src="static/images/logo.png" alt="Logo" class="header-logo">
+            <h1 class="text-xl font-bold">Disease Detection</h1>
+        </div>
+        <nav class="flex items-center space-x-6">
+            <a class="text-gray-700 hover:text-black" href="#">Home</a>
+            <a class="text-gray-700 hover:text-black" href="#">Symptoms</a>
+            <a class="text-gray-700 hover:text-black" href="#">Prevention</a>
+            <a class="text-gray-700 hover:text-black" href="#">Treatment</a>
+            <a class="text-gray-700 hover:text-black" href="#">Contact</a>
+            <button id="signOutButton" class="text-gray-700 hover:text-black">Sign Out</button>
+        </nav>
+    </header>
+
+    <main class="text-center mt-12">
+        <h2 class="text-3xl font-light">How can we help you today?</h2>
+        <div class="flex justify-center mt-8 space-x-4">
+            <!-- Alzheimer's Disease Card -->
+            <div class="relative w-64 h-96 bg-gray-200 rounded-lg overflow-hidden card-image-container">
+                <img alt="Information about Alzheimer's Disease" class="w-full h-full object-cover" src="static/images/alzheimers_image.jpg"/>
+                <div class="card-overlay"></div>
+                <div class="card-content">
+                    <h3 class="text-xl font-medium">Alzheimer's Disease</h3>
+                    <p class="text-sm">Stage Detection Using MRI</p>
+                    <a href="https://docplus-regr99mucv3grfqyutkuzh.streamlit.app/" target="_blank">
+                        <button class="mt-10 px-4 py-2 border border-white text-white rounded detect-button">Detect Now</button>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Chest Scan Detection Card -->
+            <div class="relative w-64 h-96 bg-gray-200 rounded-lg overflow-hidden card-image-container">
+                <img alt="Information about Chest Scan" class="w-full h-full object-cover" src="static/images/chest_scan_image.jpg"/>
+                <div class="card-overlay"></div>
+                <div class="card-content">
+                    <h3 class="text-xl font-medium">Chest Scan Detection</h3>
+                    <p class="text-sm">Detect abnormalities in CT scans</p>
+                    <a href="https://docpluslungcancer.streamlit.app/" target="_blank">
+                        <button class="mt-10 px-4 py-2 border border-white text-white rounded detect-button">Detect Now</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            // Your Firebase configuration details here
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Sign out function
+        document.getElementById('signOutButton').addEventListener('click', function() {
+            auth.signOut().then(() => {
+                window.location.href = 'login.html'; // Redirect to login page
+            }).catch((error) => {
+                console.error('Sign out error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

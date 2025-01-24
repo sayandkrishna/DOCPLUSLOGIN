@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forgot Password</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+    input[type="email"], input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      transition: border-color 0.3s ease;
+    }
+    input:focus {
+      border-color: #4a90e2;
+      outline: none;
+    }
+    button {
+      padding: 8px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      width: 100%;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    button:hover {
+      background-color: #218838;
+      transform: translateY(-4px);
+    }
+    .error {
+      margin-top: 10px;
+      color: red;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 h-screen flex items-center justify-center">
+
+  <!-- Forgot Password and OTP Verification Container -->
+  <div class="bg-white p-6 rounded-lg shadow-lg text-center w-96">
+
+    <!-- Forgot Password Form -->
+    <div id="forgotPasswordForm">
+      <h2 class="text-xl font-bold mb-4">Forgot Password</h2>
+      <form id="forgotPassword">
+        <input type="email" id="email" placeholder="Enter your email" required />
+        <button type="submit">Send OTP</button>
+        <p class="error" id="error"></p>
+      </form>
+    </div>
+
+    <!-- OTP Verification Form -->
+    <div id="otpForm" class="hidden">
+      <h2 class="text-xl font-bold mb-4">Verify OTP</h2>
+      <form id="otpVerification">
+        <input type="text" id="otp" placeholder="Enter OTP" required />
+        <button type="submit">Verify OTP</button>
+        <p class="error" id="otpError"></p>
+      </form>
+    </div>
+
+  </div>
+
+  <script>
+    // Toggle between forms
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    const otpForm = document.getElementById('otpForm');
+    const emailInput = document.getElementById('email');
+    const otpInput = document.getElementById('otp');
+    const errorElement = document.getElementById('error');
+    const otpErrorElement = document.getElementById('otpError');
+
+    document.getElementById('forgotPassword').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const email = emailInput.value;
+
+      fetch('/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message === 'OTP sent to your email') {
+          forgotPasswordForm.classList.add('hidden');
+          otpForm.classList.remove('hidden');
+        } else {
+          errorElement.textContent = data.message;
+        }
+      })
+      .catch(error => {
+        errorElement.textContent = 'Error sending OTP';
+      });
+    });
+
+    document.getElementById('otpVerification').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const email = emailInput.value;
+  const otp = otpInput.value;
+
+  fetch('/verify-otp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, otp })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.message === 'OTP verified, you can reset your password') {
+      // Store email in localStorage for use in reset.html
+      localStorage.setItem('resetEmail', email);
+      // Redirect to reset password page
+      window.location.href = 'reset.html';
+    } else {
+      otpErrorElement.textContent = data.message;
+    }
+  })
+  .catch(error => {
+    otpErrorElement.textContent = 'Error verifying OTP';
+  });
+});
+  </script>
+
+</body>
+</html>

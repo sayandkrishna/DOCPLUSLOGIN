@@ -79,7 +79,7 @@
             <a class="text-gray-700 hover:text-black" href="#">Prevention</a>
             <a class="text-gray-700 hover:text-black" href="#">Treatment</a>
             <a class="text-gray-700 hover:text-black" href="#">Contact</a>
-            <button id="signOutButton" class="text-gray-700 hover:text-black">Sign Out</button>
+        
         </nav>
     </header>
 
@@ -114,24 +114,8 @@
         </div>
     </main>
 
-    <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            // Your Firebase configuration details here
-        };
+    
 
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
 
-        // Sign out function
-        document.getElementById('signOutButton').addEventListener('click', function() {
-            auth.signOut().then(() => {
-                window.location.href = 'login.html'; // Redirect to login page
-            }).catch((error) => {
-                console.error('Sign out error:', error);
-            });
-        });
-    </script>
 </body>
 </html>
